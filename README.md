@@ -41,3 +41,36 @@ To view the logs for the last 24 hours run the following on the terminal:
 ```
 log show --last 24h --predicate 'senderImagePath contains "AMDGPUWakeHandler"'
 ```
+
+
+### Sarang's notes:
+-----
+
+I have preferred to go with manual loading as i did with my Linux installation.
+The way it is setup currently is that you cannot switch off dGPU if it was not initially, that is not entirely necessary. On my Linux installation I have been switching it off whenever System wakes from sleep (details later).
+
+This kext has all the code to switch off dGPU, just needs to do it unconditionally:
+
+```cpp
+IOService *AMDGPUWakeHandler::probe(IOService *provider,
+                                    SInt32 *score)
+{
+    IOService *result = super::probe(provider, score);
+    IOLog("Probing\n");
+    //if (get_discrete_state() != 0) {
+    //    IOLog("Failed to Load. Discrete GPU was powered on\n");
+    //    return 0;
+    //}
+    return result;
+}
+```
+
+kexts directory has two `kexts`:
+ 
+ - `AMDGPUWakeHandler-force.kext` was built by stubbing out above code
+ - `AMDGPUWakeHandler.kext` was built without any modifications
+
+I have used `AMDGPUWakeHandler-force.kext` without any issues on my `MacOS 10.13.6` so far. I can confirm that temperature drops significantly after it.
+
+![istats Menu Snapshot](https://github.com/sarangbaheti/AMDGPUWakeHandler/blob/master/images/dGPU-swithced-off-forcefully.png)
+
