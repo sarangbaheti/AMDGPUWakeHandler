@@ -42,12 +42,15 @@ To view the logs for the last 24 hours run the following on the terminal:
 log show --last 24h --predicate 'senderImagePath contains "AMDGPUWakeHandler"'
 ```
 
+<br/>
+<br/>
 
-### Sarang's notes:
+## Sarang's notes:
 -----
 
-I have preferred to go with manual loading as i did with my Linux installation.
-The way it is setup currently is that you cannot switch off dGPU if it was not initially, that is not entirely necessary. On my Linux installation I have been switching it off whenever System wakes from sleep (details later).
+I have preferred to go with manual loading as I did with my Linux installation.
+The way it is setup currently is that you cannot switch off dGPU if it was not initially switched off when you booted, that is not entirely necessary. On my Linux installation I have been switching it off whenever System wakes from sleep (details later). It is completely different thing that macOS High Sierra does not wake up after sleep. But temperature is a real pain..
+
 
 This kext has all the code to switch off dGPU, just needs to do it unconditionally:
 
@@ -64,6 +67,9 @@ IOService *AMDGPUWakeHandler::probe(IOService *provider,
     return result;
 }
 ```
+
+Now, do above at your own risk, it works for me so I went with it. Second the builds are just my caches. Be careful if you use them directly, preferably build the project locally (yes after downloading a good 6GB XCode). 
+
 
 kexts directory has two `kexts`:
  
